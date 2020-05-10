@@ -34,6 +34,10 @@ app.use(
   })
 );
 
+app.get('/', (req, res) => {
+  res.status(200).send('Success');
+});
+
 // ? POSTMAN을 통한 test에 필요할지도 모릅니다. logging을 활용하세요.
 //app.use(morgan('dev'));
 
