@@ -1,6 +1,7 @@
 const { users } = require('../../models');
 
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 module.exports = {
   post: (req, res) => {
@@ -8,7 +9,7 @@ module.exports = {
 
     // 1) 유저의 로그인을 확인 한다.
     // 2) 유저의 패스워드는 암호화 되어 있어야 한다.
-    // 3) 유저가 로그인을 실패 했을 경우 409로 에러를 보낸다.
+    // 3) 유저가 로그인을 실패 했을 경우 404로 에러를 보낸다.
     // 4) 유저의 회원정보를 데이터베이스에서 확인한다.
     // 5) 회원의 id 를 session에 담아준다.
 
@@ -29,7 +30,10 @@ module.exports = {
       .then((result) => {
         if (result) {
           req.session.user = result;
-          res.status(200).json({ id: req.session.user.id });
+          jwt.sign({ id: req.session.user.id }, salt, (err, token) => {
+            console.log(token);
+            res.status(200).json({ token });
+          });
         } else {
           res.status(404).send('unvalid user');
         }
